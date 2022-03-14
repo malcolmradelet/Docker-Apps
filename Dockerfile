@@ -50,6 +50,7 @@ RUN curl -fsSL https://sourceforge.net/projects/itop/files/latest/download -o /t
     unzip /tmp/iTop.zip -d /tmp && \
     mv /tmp/web/* /var/www/localhost/htdocs && \
     rm /var/www/localhost/htdocs/index.html && \
+    rm -rf /tmp/* && \
     mkdir /var/www/localhost/htdocs/env-production
 
 # Install Composer
