@@ -1,4 +1,2 @@
 # Docker-Apps
-A collection of dockerfiles for apps I find interesting
-
-Each app is a separate branch from main
+A collection of dockerfiles or docker-compose configs for apps I find interesting
