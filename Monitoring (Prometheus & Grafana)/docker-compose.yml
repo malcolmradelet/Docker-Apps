@@ -1,0 +1,63 @@
+version: "3"
+services:
+  Prometheus:
+    container_name: Prometheus
+    image: ubuntu/prometheus
+    hostname: prometheus
+    labels:
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.local`)"
+    volumes:
+      - E:\Docker\Volumes\Prometheus_Config\prometheus.yml:/etc/prometheus/prometheus.yml
+      - Prometheus_Data:/prometheus
+    environment:
+      - TZ=America/Vancouver
+    restart: unless-stopped
+  Grafana:
+    container_name: Grafana
+    image: grafana/grafana
+    hostname: grafana
+    labels:
+      - "traefik.http.routers.grafana.rule=Host(`grafana.local`)"
+    volumes:
+      - E:\Docker\Volumes\Grafana_Config\datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - Grafana_Data:/var/lib/grafana
+    depends_on:
+      - Prometheus
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    restart: unless-stopped
+  Traefik:
+    container_name: Traefik
+    image: traefik:v2.7
+    hostname: traefik
+    ports:
+      - 80:80
+      - 9080:8080
+    volumes:
+      - C:\Scripts\Traefik\traefik.yml:/etc/traefik/traefik.yml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+  Blackbox_Exporter:
+    container_name: Blackbox_Exporter
+    image: prom/blackbox-exporter:master
+    ports:
+      - 9115:9115
+    volumes:
+      - E:\Docker\Volumes\Blackbox_Config\blackbox.yml:/config/blackbox.yml
+    command: --config.file=/config/blackbox.yml
+    restart: unless-stopped
+
+volumes:
+  Prometheus_Data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: E:\Docker\Volumes\Prometheus_Data
+  Grafana_Data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: E:\Docker\Volumes\Grafana_Data
