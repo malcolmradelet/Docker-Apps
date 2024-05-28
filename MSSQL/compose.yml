@@ -1,0 +1,27 @@
+services:
+  mssql:
+    container_name: mssql
+    hostname: mssql
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1" -b -o /dev/null
+      interval: 30s
+      timeout: 5s
+      retries: 2
+      start_period: 15s
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=ReplaceMe
+      - MSSQL_PID=Developer
+      - MSSQL_AGENT_ENABLED=true
+      - TZ=America/Vancouver
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    restart: unless-stopped
+    # Set the shm_size to 1gb to avoid SQL Server startup issues
+    shm_size: 1gb
+
+volumes:
+  sqlvolume:
