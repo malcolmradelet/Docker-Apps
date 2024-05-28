@@ -11,12 +11,8 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
       - 1433:1433
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=ReplaceMe
-      - MSSQL_PID=Developer
-      - MSSQL_AGENT_ENABLED=true
-      - TZ=America/Vancouver
+    env_file:
+      - .env
     volumes:
       - sqlvolume:/var/opt/mssql
     restart: unless-stopped
